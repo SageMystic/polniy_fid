@@ -52,3 +52,34 @@ class Ball:
                     self.velY = BALL_SPEED * math.sin(self.theta)
                     self.x = paddle.x - self.radius - paddle.width//2
                     self.hitSound.play()
+                    
+    def Boundary(self, left_score, right_score):
+        if (self.y - self.radius) <= 0 or (self.y + self.radius) >= HEIGHT:
+            self.velY *= -1
+
+        if (self.x - self.radius) <= 0:
+            self.Reset()
+            right_score += 1
+            self.scoreSound.play()
+
+        elif (self.x + self.radius) >= WIDTH:
+            self.Reset()
+            left_score += 1
+            self.scoreSound.play()
+
+
+        return left_score, right_score
+
+    def Reset(self):
+        self.x = WIDTH//2
+        self.y = HEIGHT//2
+        self.theta = random.uniform(-math.pi/3, math.pi/3)
+
+        self.velX = BALL_SPEED * math.cos(self.theta)
+        self.velY = BALL_SPEED * math.sin(self.theta)
+
+        if random.random() > 0.5:
+            self.velX *= -1
+
+    def Draw(self, screen):
+        pygame.draw.circle(screen, self.color, (self.x, self.y), self.radius)
