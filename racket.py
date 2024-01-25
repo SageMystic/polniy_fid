@@ -1,7 +1,7 @@
 import pygame
 from constants import *
 
-class Paddle:
+class Racket:
     def __init__(self, x):
         self.x = x
         self.y = HEIGHT//2
