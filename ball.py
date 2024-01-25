@@ -1,4 +1,5 @@
 import pygame
+from pygame import mixer
 from constants import *
 import random
 import math
@@ -14,12 +15,12 @@ class Ball:
         self.y = HEIGHT//2
         self.radius = 20
         self.color = WHITE
-        self.theta = random.uniform(-math.pi/3, math.pi/3)
-        self.velX = BALL_SPEED * math.cos(self.theta)
-        self.velY = BALL_SPEED * math.sin(self.theta)
-        self.hitSound = pygame.mixer.Sound("./assets/hit.mp3")
+        self.angle = random.uniform(-math.pi/3, math.pi/3)
+        self.velX = BALL_SPEED * math.cos(self.angle)
+        self.velY = BALL_SPEED * math.sin(self.angle)
+        self.hitSound = mixer.Sound("./assets/hit.mp3")
         self.hitSound.set_volume(0.2)
-        self.scoreSound = pygame.mixer.Sound("./assets/score.mp3")
+        self.scoreSound = mixer.Sound("./assets/score.mp3")
         self.scoreSound.set_volume(0.1)
 
     def update(self):
@@ -27,33 +28,36 @@ class Ball:
         self.y += self.velY
             
 
-    def Hit(self, paddle, left=True):
-        if left:
-            if self.y < paddle.y + paddle.height//2 and \
-                self.y > paddle.y - paddle.height//2 and \
-                self.x - self.radius < paddle.x + paddle.width//2:
-                if self.x > paddle.x:
-                    d = self.y - (paddle.y - paddle.height//2)
-                    self.theta = translate(d, 0, paddle.height, -math.radians(45), math.radians(45))
+    def Hit(self, racket, left=True): #прописали поведение шарика после удара
+        if left: #проверяется с левой ракеткой
+            if self.y < racket.y + racket.height//2 and \
+                self.y > racket.y - racket.height//2 and \
+                self.x - self.radius < racket.x + racket.width//2:
+                '''Проверка на соударение с левой ракеткой'''
+                if self.x > racket.x: #мяч правее ракетки
+                    d = self.y - (racket.y - racket.height//2)#расстояние от центра ракетки до корды y мяча
+                    self.angle = translate(d, 0, racket.height, -math.radians(45), math.radians(45))
                     
-                    self.velX = BALL_SPEED * math.cos(self.theta)
-                    self.velY = BALL_SPEED * math.sin(self.theta)
-                    self.x = paddle.x + self.radius + paddle.width//2
+                    self.velX = BALL_SPEED * math.cos(self.angle)
+                    self.velY = BALL_SPEED * math.sin(self.angle)
+                    self.x = racket.x + self.radius + racket.width//2
                     self.hitSound.play()
-        else:   
-            if self.y < paddle.y + paddle.height//2 and \
-                self.y > paddle.y - paddle.height//2 and \
-                self.x + self.radius > paddle.x - paddle.width//2:
-                if self.x < paddle.x:
-                    d = self.y - (paddle.y - paddle.height//2)
-                    self.theta = translate(d, 0, paddle.height, math.radians(225), math.radians(135))
+        else:   #проверяется с правой ракеткой
+            if self.y < racket.y + racket.height//2 and \
+                self.y > racket.y - racket.height//2 and \
+                self.x + self.radius > racket.x - racket.width//2:
+                '''Проверка на соударение с правой ракеткой'''
+                if self.x < racket.x:
+                    d = self.y - (racket.y - racket.height//2)
+                    self.angle = translate(d, 0, racket.height, math.radians(225), math.radians(135))
                     
-                    self.velX = BALL_SPEED * math.cos(self.theta)
-                    self.velY = BALL_SPEED * math.sin(self.theta)
-                    self.x = paddle.x - self.radius - paddle.width//2
+                    self.velX = BALL_SPEED * math.cos(self.angle)
+                    self.velY = BALL_SPEED * math.sin(self.angle)
+                    self.x = racket.x - self.radius - racket.width//2
                     self.hitSound.play()
                     
-    def Boundary(self, left_score, right_score):
+
+    def Boundary(self, left_score, right_score): #касание мяча стенки
         if (self.y - self.radius) <= 0 or (self.y + self.radius) >= HEIGHT:
             self.velY *= -1
 
@@ -70,16 +74,16 @@ class Ball:
 
         return left_score, right_score
 
-    def Reset(self):
+    def Reset(self): #возвращение в начало игры
         self.x = WIDTH//2
         self.y = HEIGHT//2
-        self.theta = random.uniform(-math.pi/3, math.pi/3)
+        self.angle = random.uniform(-math.pi/3, math.pi/3)#новый угол под которым полетит мяч
 
-        self.velX = BALL_SPEED * math.cos(self.theta)
-        self.velY = BALL_SPEED * math.sin(self.theta)
+        self.velX = BALL_SPEED * math.cos(self.angle)
+        self.velY = BALL_SPEED * math.sin(self.angle)
 
-        if random.random() > 0.5:
+        if random.random() > 0.5: #в какую сторону полетит мяч
             self.velX *= -1
 
-    def Draw(self, screen):
+    def Draw(self, screen):#отрисовка мяча
         pygame.draw.circle(screen, self.color, (self.x, self.y), self.radius)
