@@ -33,12 +33,12 @@ class Game:
     
     def DrawScore(self): #отрисовка счета
         left_text = self.font.render(str(self.left_score), True, WHITE)
-        self.screen.blit(left_text, (WIDTH//10, HEIGHT//12))
+        self.screen.blit(left_text, (WIDTH//10, HEIGHT//12)) # рендер счёта
         right_text = self.font.render(str(self.right_score), True, WHITE)
         self.screen.blit(right_text, (WIDTH - 100, HEIGHT//12))
     def Run(self):
         while self.running:
-            self.screen.blit(self.background, (0, 0))
+            self.screen.blit(self.background, (0, 0)) #рендер счёта
             self.HandleEvent()
 
             self.ball.update()
