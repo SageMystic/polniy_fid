@@ -37,7 +37,7 @@ class Ball:
                 if self.x > racket.x: #мяч правее ракетки
                     d = self.y - (racket.y - racket.height//2)#расстояние от центра ракетки до корды y мяча
                     self.angle = translate(d, 0, racket.height, -math.radians(45), math.radians(45))
-                    
+                    #угол под которым полетит мяч после удара
                     self.velX = BALL_SPEED * math.cos(self.angle)
                     self.velY = BALL_SPEED * math.sin(self.angle)
                     self.x = racket.x + self.radius + racket.width//2
@@ -50,7 +50,7 @@ class Ball:
                 if self.x < racket.x:
                     d = self.y - (racket.y - racket.height//2)
                     self.angle = translate(d, 0, racket.height, math.radians(225), math.radians(135))
-                    
+                    #угол под которым полетит мяч после удара
                     self.velX = BALL_SPEED * math.cos(self.angle)
                     self.velY = BALL_SPEED * math.sin(self.angle)
                     self.x = racket.x - self.radius - racket.width//2
