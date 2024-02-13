@@ -19,3 +19,4 @@ with open('houses.csv', 'r') as file:
 with open('unusual.json', 'w') as f:
     json.dump(ls, f)
     
+https://lyceum.s3.yandex.net/content/sr/23extra2lite3/houses.csv
